@@ -11,8 +11,11 @@ public class Main {
     static Condition c3 = new Condition(36.0,new LinkedList<>(Arrays.asList(40.0,36.0)));
     static Condition c4 = new Condition(14.4,new LinkedList<>(Arrays.asList(48.0,12.0)));
 
+    static Condition goalFusnction = new Condition(Condition.whichWay.MAX, new LinkedList<>(Arrays.asList(12000.0,6000.0)));
+
     public static void main(String[] args) {
-        System.out.println(getListOfRestrictivePoints(new LinkedList<>(Arrays.asList(c1,c2,c3,c4)), Condition.whichWay.MAX));
+        System.out.println(getRestrictivePoints(new LinkedList<>(Arrays.asList(c1,c2,c3,c4)), Condition.whichWay.MAX));
+        System.out.println(getBestSolutionForPP(getRestrictivePoints(new LinkedList<>(Arrays.asList(c1,c2,c3,c4)), Condition.whichWay.MAX),goalFusnction));
     }
 
     private void mainMain(){
@@ -30,12 +33,36 @@ public class Main {
         System.out.println("");
     }
 
-    static private LinkedList<Point> getListOfRestrictivePoints(LinkedList<Condition> conditions, final Condition.whichWay goalFunctionMinOrMax){
+    static private Pair<Point,Double> getBestSolutionForPP(LinkedList<Point> restrictivePoints, Condition goalFunction){ //PP - Primary Program
+        Double solution = restrictivePoints.getFirst().getX()*goalFunction.getArguments().getFirst()+restrictivePoints.getFirst().getY()*goalFunction.getArguments().get(1);
+        Point solutionPoint = restrictivePoints.getFirst();
+        switch (goalFunction.getWhichSide()) {
+            case MAX:
+                for (Point point : restrictivePoints) {
+                    if (solution < point.getX()*goalFunction.getArguments().getFirst()+point.getY()*goalFunction.getArguments().get(1)) {
+                        solution = point.getX() * goalFunction.getArguments().getFirst() + point.getY() * goalFunction.getArguments().get(1);
+                        solutionPoint = point;
+                    }
+                }
+                break;
+            case MIN:
+                for (Point point : restrictivePoints) {
+                    if (solution > point.getX()*goalFunction.getArguments().getFirst()+point.getY()*goalFunction.getArguments().get(1)) {
+                        solution = point.getX() * goalFunction.getArguments().getFirst() + point.getY() * goalFunction.getArguments().get(1);
+                        solutionPoint = point;
+                    }
+                }
+                break;
+        }
+        return new Pair<>(solutionPoint,solution);
+    }
+
+    static private LinkedList<Point> getRestrictivePoints(LinkedList<Condition> conditions, final Condition.whichWay goalFunctionMinOrMax){
         LinkedList<Point> restrictivePoints = new LinkedList<>();
         LinkedList<Point> allPoints = getAllCross(conditions);
         Point restrictivePoint = allPoints.getFirst();
-        Pair restrictivePointsOnAxes = getCrossWithAxes(conditions.getFirst()) ;
-        Pair tmpPair;
+        Pair<Point,Point> restrictivePointsOnAxes = getCrossWithAxes(conditions.getFirst()) ;
+        Pair<Point,Point> tmpPair;
         switch (goalFunctionMinOrMax){
             case MAX:
                 for(Point point:allPoints){
@@ -92,10 +119,10 @@ public class Main {
     }
 
     //returns crosses with axes
-    static private Pair getCrossWithAxes(Condition condition){
+    static private Pair<Point,Point> getCrossWithAxes(Condition condition){
         Point pointOnY = new Point(0.0,condition.getEquals()/condition.getArguments().get(1));
         Point pointOnX = new Point(condition.getEquals()/condition.getArguments().getFirst(),0.0);
-        return new Pair(pointOnY,pointOnX);
+        return new Pair<>(pointOnY,pointOnX);
     }
 
     //it gets cross point of two function: Ax + Bx = C

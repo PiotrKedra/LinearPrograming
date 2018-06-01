@@ -8,6 +8,11 @@ public class Condition {
     private Double equals;
     private LinkedList<Double> arguments;
 
+    public Condition(Condition.whichWay whichWay, LinkedList<Double> arguments) {
+        this.whichWay = whichWay;
+        this.arguments = arguments;
+    }
+
     public Condition(Double equals, LinkedList<Double> arguments) {
         this.equals = equals;
         this.arguments = arguments;
