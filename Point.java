@@ -3,13 +3,20 @@ package com.company;
 public class Point {
     private Double x;
     private Double y;
+    private Pair<Integer,Integer> crossOfLines;
+
+    public Point(Double x, Double y, Pair<Integer, Integer> crossOfLines) {
+        this.x = x;
+        this.y = y;
+        this.crossOfLines = crossOfLines;
+    }
 
     public Point(Double x, Double y) {
         this.x = x;
         this.y = y;
     }
 
-    public Double getDistancFromCenter(){
+    public Double getDistanceFromCenter(){
         return Math.sqrt(this.getX()*this.getX()+this.getY()*this.getY());
     }
 
@@ -19,6 +26,14 @@ public class Point {
                 "x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    public void setCrossOfLines(Pair<Integer, Integer> crossOfLines) {
+        this.crossOfLines = crossOfLines;
+    }
+
+    public Pair<Integer, Integer> getCrossOfLines() {
+        return crossOfLines;
     }
 
     public void setX(Double x) {

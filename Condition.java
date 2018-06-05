@@ -7,6 +7,7 @@ public class Condition {
     private whichWay whichWay; //          <= i 'min' to 1, >= i 'max' to 2
     private Double equals;
     private LinkedList<Double> arguments;
+    private Integer number;
 
     public Condition(Condition.whichWay whichWay, LinkedList<Double> arguments) {
         this.whichWay = whichWay;
@@ -16,6 +17,14 @@ public class Condition {
     public Condition(Double equals, LinkedList<Double> arguments) {
         this.equals = equals;
         this.arguments = arguments;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 
     public int getLenght(){
