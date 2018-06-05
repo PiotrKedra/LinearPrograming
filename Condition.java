@@ -3,59 +3,60 @@ package com.company;
 import java.util.LinkedList;
 
 public class Condition {
-    private boolean isItGoalFunction = false;
     private whichWay whichWay; //          <= i 'min' to 1, >= i 'max' to 2
     private Double equals;
     private LinkedList<Double> arguments;
     private Integer number;
 
-    public Condition(Condition.whichWay whichWay, LinkedList<Double> arguments) {
+    Condition(Condition.whichWay whichWay, LinkedList<Double> arguments) {
         this.whichWay = whichWay;
         this.arguments = arguments;
     }
 
-    public Condition(Double equals, LinkedList<Double> arguments) {
+    Condition(Double equals, LinkedList<Double> arguments) {
         this.equals = equals;
         this.arguments = arguments;
     }
 
-    public Integer getNumber() {
+    Integer getNumber() {
         return number;
     }
 
-    public void setNumber(Integer number) {
+    void setNumber(Integer number) {
         this.number = number;
     }
 
-    public int getLenght(){
+    int getLenght(){
         return arguments.size();
     }
 
-    public void setWhichSide(whichWay whichSide) {
+    void setWhichSide(whichWay whichSide) {
         whichWay = whichSide;
     }
 
-    public void setEquals(Double equals) {
-        this.equals = equals;
-    }
-
-    public void setArguments(LinkedList<Double> arguments) {
-        this.arguments = arguments;
-    }
-
-    public whichWay getWhichSide() {
+    whichWay getWhichSide() {
         return whichWay;
     }
 
-    public Double getEquals() {
+    Double getEquals() {
         return equals;
     }
 
-    public LinkedList<Double> getArguments() {
+    LinkedList<Double> getArguments() {
         return arguments;
     }
 
     public enum whichWay{
         MIN,MAX,SMALLER,GREATER
+    }
+
+    @Override
+    public String toString() {
+        return "Condition{" +
+                "whichWay=" + whichWay +
+                ", equals=" + equals +
+                ", arguments=" + arguments +
+                ", number=" + number +
+                '}';
     }
 }
