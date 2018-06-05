@@ -6,13 +6,15 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Math.abs;
+
 
 /*this example work just for all kind of PP, but if we have to change for PD its juz work for input like:
 40*x1 + 45*x2 + 40*x3 + 48*x4 >= 12000
 30*x1 + 15*x2 + 30*x3 + 12*x4 >= 6000
 G(x1,x2,x3,x4) = 24*x1 + 27*x2 + 36*x3 + 14.4*x4 -> min
 input has to look like above example
- */ 
+ */
 
 class Solution {
     void handleInput(){
@@ -42,7 +44,7 @@ class Solution {
         Condition goalFunction = changeStringToGoalFunction(goalFunctionString);
         if(conditions.getFirst().getLenght()>2){ //if it is greater then 2 we have to change PP To DP
             Pair<LinkedList<Condition>,Condition> PD = changePPToPD(conditions,goalFunction);
-            LinkedList<Point> restrictivePoints = getRestrictivePoints(PD.getFirst(),PD.getSecond().getWhichSide());
+            LinkedList<Point> restrictivePoints = getRestrictivePoints(PD.getFirst());
             Pair<Point,Double> solutionForPD = getBestSolutionForChangedPP(restrictivePoints,PD.getSecond());
             Point solutionPoint = getSolutionPointFromPDToPP(solutionForPD,conditions);
             System.out.println("Lista punktów ograniczających zbiór rozwiązań dopuszczalnych dla PD: ");
@@ -50,7 +52,7 @@ class Solution {
             System.out.println("Punkt realizujacy optimum PP: " + solutionPoint);
             System.out.println("Wartość w tym punkcie: " + solutionForPD.getSecond());
         }else {
-            LinkedList<Point> restrictivePoints = getRestrictivePoints(conditions,goalFunction.getWhichSide());
+            LinkedList<Point> restrictivePoints = getRestrictivePoints(conditions);
             Pair<Point,Double> solutionForPD = getBestSolutionForChangedPP(restrictivePoints,goalFunction);
             System.out.println("Lista punktów ograniczających zbiór rozwiązań dopuszczalnych: ");
             for(Point point: restrictivePoints) System.out.println(point);
@@ -96,45 +98,15 @@ class Solution {
         return new Pair<>(solutionPoint,solution);
     }
 
-    private LinkedList<Point> getRestrictivePoints(LinkedList<Condition> conditions, Condition.whichWay goalFunctionMinOrMax){
+    private LinkedList<Point> getRestrictivePoints(LinkedList<Condition> conditions){
         LinkedList<Point> restrictivePoints = new LinkedList<>();
         LinkedList<Point> allPoints = getAllCross(conditions);
 
         for(Point point: allPoints){
-            //System.out.println(point);
             if(checkIfPointIsGoodWithCondition(point,conditions)){
                 restrictivePoints.add(point);
             }
         }
-        Pair<Point,Point> restrictivePointsOnAxes = getCrossWithAxes(conditions.getFirst()) ;
-        Pair<Point,Point> tmpPair;
-        switch (goalFunctionMinOrMax) {
-            case MAX:
-                for (Condition condition : conditions) {
-                    tmpPair = getCrossWithAxes(condition);
-                    if (restrictivePointsOnAxes.getFirst().getY() > tmpPair.getFirst().getY()) {
-
-                        restrictivePointsOnAxes.setFirst(tmpPair.getFirst());
-                    }
-                    if (restrictivePointsOnAxes.getSecond().getX() > tmpPair.getSecond().getX()) {
-                        restrictivePointsOnAxes.setSecond(tmpPair.getSecond());
-                    }
-                }
-                break;
-            case MIN:
-                for (Condition condition:conditions){
-                    tmpPair = getCrossWithAxes(condition);
-                    if(restrictivePointsOnAxes.getFirst().getY() < tmpPair.getFirst().getY()){
-                        restrictivePointsOnAxes.setFirst(tmpPair.getFirst());
-                    }
-                    if(restrictivePointsOnAxes.getSecond().getX() < tmpPair.getSecond().getX()){
-                        restrictivePointsOnAxes.setSecond(tmpPair.getSecond());
-                    }
-                }
-                break;
-        }
-        restrictivePoints.add(restrictivePointsOnAxes.getFirst());
-        restrictivePoints.add(restrictivePointsOnAxes.getSecond());
         return restrictivePoints;
     }
 
@@ -144,12 +116,12 @@ class Solution {
             switch (condition.getWhichSide()) {
                 case SMALLER:
                     if (condition.getArguments().get(0) * point.getX() + condition.getArguments().get(1) * point.getY() > condition.getEquals()) {
-                        result = false;
+                        if(!(abs(condition.getArguments().get(0) * point.getX() + condition.getArguments().get(1) * point.getY() - condition.getEquals())<0.00000001)) result = false;
                     }
                     break;
                 case GREATER:
                     if(condition.getArguments().get(0) * point.getX() + condition.getArguments().get(1) * point.getY() < condition.getEquals()){
-                        result = false;
+                        if(!(abs(condition.getArguments().get(0) * point.getX() + condition.getArguments().get(1) * point.getY() - condition.getEquals())<0.00000001)) result = false;
                     }
                     break;
             }
@@ -168,6 +140,11 @@ class Solution {
                 Point point = getCrossPoint(c1,c2);
                 if(point.getX()>=0 && point.getY()>=0) points.add(point);
             }
+        }
+        for (Condition condition:conditons){
+            Pair<Point,Point> crosWithAxes = getCrossWithAxes(condition);
+            points.add(crosWithAxes.getFirst());
+            points.add(crosWithAxes.getSecond());
         }
         return points;
     }
