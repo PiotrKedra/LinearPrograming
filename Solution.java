@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 30*x1 + 15*x2 + 30*x3 + 12*x4 >= 6000
 G(x1,x2,x3,x4) = 24*x1 + 27*x2 + 36*x3 + 14.4*x4 -> min
 input has to look like above example
- */
+ */ 
 
 class Solution {
     void handleInput(){
